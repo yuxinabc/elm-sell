@@ -6,7 +6,11 @@
 
 <script>
   export default {
-    name: 'business'
+    name: 'business',
+    methods: {
+      fetchData () {
+      }
+    }
   }
 </script>
 

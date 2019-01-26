@@ -7,7 +7,8 @@
       :current="current"
       @change="changeHandler"
       @sticky-change="stickyChangeHandler"
-      :options="scrollOptions">
+      :options="scrollOptions"
+      v-if="goods.length">
       <template slot="bar" slot-scope="props">
         <cube-scroll-nav-bar
           class="my-scroll-nav-bar"
@@ -50,26 +51,34 @@
                   <span class="now">￥{{food.price}}</span>
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cart-control-wrapper">
+                  <cart-control></cart-control>
+                </div>
               </div>
           </li>
         </ul>
       </cube-scroll-nav-panel>
     </cube-scroll-nav>
+    <shop-cart></shop-cart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import jsonData from '../../../data.json'
   import SupportIcon from '../support-icon/support-icon'
+  import ShopCart from '../shop-cart/shop-cart'
+  import CartControl from '../cart-control/cart-control'
+  import { getGoods } from '../../api'
   export default {
     name: 'goods',
     components: {
-      SupportIcon
+      SupportIcon,
+      ShopCart,
+      CartControl
     },
     data () {
       return {
-        goods: jsonData.goods,
-        current: jsonData.goods[0].name,
+        goods: [],
+        current: '',
         scrollOptions: {
           click: false,
           directionLockThreshold: 0
@@ -100,6 +109,14 @@
       },
       stickyChangeHandler (current) {
         console.log('sticky-change', current)
+      },
+      fetchData () {
+        getGoods().then(goods => {
+           this.goods = goods
+          if (this.goods.length > 0) {
+            this.current = this.goods[0].name
+          }
+        })
       }
     }
   }
@@ -174,6 +191,7 @@
              margin-right 10px
              vertical-align top
             .content
+              position relative
               flex 1
               overflow hidden
               h2
@@ -206,4 +224,8 @@
                  font-size 10px
                  color rgb(147,153,159)
                  font-weight 200
+              .cart-control-wrapper
+                position absolute
+                bottom 10px
+                right 28px
 </style>

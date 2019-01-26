@@ -19,7 +19,7 @@
         @change="changePage"
       >
         <cube-slide-item v-for="(tab,index) in tabs" :key="index" :options="scrollOptions">
-            <component :is="tab.component" :data="tab.data"></component>
+            <component :is="tab.component" :data="tab.data" ref="component"></component>
         </cube-slide-item>
       </cube-slide>
     </div>
@@ -65,9 +65,14 @@
         }
       }
     },
+    mounted() {
+      // $refs.component 需要在mounted时才有值
+      this.changePage(0)
+    },
     methods: {
       changePage (current) {
         this.selectedLabel = this.tabs[current].label
+       this.$refs.component[current].fetchData()
       },
       findLabelByIndex(index) {
         return this.tabs[index].label

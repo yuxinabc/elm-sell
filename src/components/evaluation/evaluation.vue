@@ -12,7 +12,11 @@
 
 <script>
   export default {
-    name: 'evaluation'
+    name: 'evaluation',
+    methods: {
+      fetchData () {
+      }
+    }
   }
 </script>
 
