@@ -1,44 +1,45 @@
 <template>
   <div class="goods-wrapper">
-    <cube-scroll-nav
-      class="my-scroll-nav"
-      :side="true"
-      :data="goods"
-      :current="current"
-      @change="changeHandler"
-      @sticky-change="stickyChangeHandler"
-      :options="scrollOptions"
-      v-if="goods.length">
-      <template slot="bar" slot-scope="props">
-        <cube-scroll-nav-bar
-          class="my-scroll-nav-bar"
-          :direction="'vertical'"
-          :labels="props.labels"
-          :txts="barTexts"
-          :current="props.current">
-          <template slot-scope="props">
-            <div class="txt">
-              <support-icon
-                v-if="props.txt.type>=1"
-                :size=3
-                :type="props.txt.type"
-              ></support-icon>
-              <span>{{props.txt.name}}</span>
-              <!--<span class="num" v-if="props.txt.count">
-                  <bubble :num="props.txt.count"></bubble>
-              </span>-->
-            </div>
-          </template>
-        </cube-scroll-nav-bar>
-      </template>
-      <cube-scroll-nav-panel
-        class="my-scroll-nav-panel"
-        v-for="good in goods"
-        :key="good.name"
-        :label="good.name"
-        :title="good.name">
-        <ul class="goods-list">
-          <li class="goods-item" v-for="(food,index) in good.foods" :key="index">
+    <div class="scroll-nav-wrapper">
+      <cube-scroll-nav
+        class="my-scroll-nav"
+        :side="true"
+        :data="goods"
+        :current="current"
+        @change="changeHandler"
+        @sticky-change="stickyChangeHandler"
+        :options="scrollOptions"
+        v-if="goods.length">
+        <template slot="bar" slot-scope="props">
+          <cube-scroll-nav-bar
+            class="my-scroll-nav-bar"
+            :direction="'vertical'"
+            :labels="props.labels"
+            :txts="barTexts"
+            :current="props.current">
+            <template slot-scope="props">
+              <div class="txt">
+                <support-icon
+                  v-if="props.txt.type>=1"
+                  :size=3
+                  :type="props.txt.type"
+                ></support-icon>
+                <span>{{props.txt.name}}</span>
+                <!--<span class="num" v-if="props.txt.count">
+                    <bubble :num="props.txt.count"></bubble>
+                </span>-->
+              </div>
+            </template>
+          </cube-scroll-nav-bar>
+        </template>
+        <cube-scroll-nav-panel
+          class="my-scroll-nav-panel"
+          v-for="good in goods"
+          :key="good.name"
+          :label="good.name"
+          :title="good.name">
+          <ul class="goods-list">
+            <li class="goods-item" v-for="(food,index) in good.foods" :key="index">
               <img :src="food.icon">
               <div class="content">
                 <h2>{{food.name}}</h2>
@@ -51,15 +52,14 @@
                   <span class="now">￥{{food.price}}</span>
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
-                <div class="cart-control-wrapper">
-                  <cart-control></cart-control>
-                </div>
+                <cart-control :data="foodWrapper(food,good.name)"></cart-control>
               </div>
-          </li>
-        </ul>
-      </cube-scroll-nav-panel>
-    </cube-scroll-nav>
-    <shop-cart></shop-cart>
+            </li>
+          </ul>
+        </cube-scroll-nav-panel>
+      </cube-scroll-nav>
+    </div>
+    <shop-cart :data="cartInfo"></shop-cart>
   </div>
 </template>
 
@@ -75,6 +75,11 @@
       ShopCart,
       CartControl
     },
+    props: {
+      data: {
+        type: Object
+      }
+    },
     data () {
       return {
         goods: [],
@@ -86,6 +91,12 @@
       }
     },
     computed: {
+      cartInfo() {
+        return {
+          minPrice: this.data.minPrice,
+          deliveryPrice: this.data.deliveryPrice
+        }
+      },
       barTexts () {
         let ret = []
         this.goods.forEach((good) => {
@@ -104,6 +115,10 @@
       }
     },
     methods: {
+      foodWrapper(food, name) {
+        food.foodTypeName = name
+        return food
+      },
       changeHandler (label) {
         console.log('changed to:', label)
       },
@@ -125,19 +140,22 @@
 <style lang="stylus" rel="stylesheet/stylus">
   .goods-wrapper
     position relative
-    width 100%
     height 100%
-    .my-scroll-nav
+    .scroll-nav-wrapper
       position absolute
       width 100%
       top 0
       left 0
+      bottom: 48px
       .my-scroll-nav-bar
         width 80px
         white-space: normal
         overflow: hidden
         .cube-scroll-nav-bar-item
-          padding 20px 10px
+          display flex
+          align-items center
+          padding 0 10px
+          height 56px
         .txt
           width 100%
           .support-ico
@@ -194,6 +212,7 @@
               position relative
               flex 1
               overflow hidden
+              box-sizing border-box
               h2
                font-size 14px
                line-height 14px
@@ -224,8 +243,8 @@
                  font-size 10px
                  color rgb(147,153,159)
                  font-weight 200
-              .cart-control-wrapper
+              .cart-control
                 position absolute
-                bottom 10px
-                right 28px
+                right 36px
+                bottom 0
 </style>

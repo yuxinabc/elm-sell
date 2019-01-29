@@ -1,27 +1,53 @@
 <template>
   <div class="shop-cart-wrapper">
     <div class="logo-wrapper">
-      <div class="logo">
-        <i class="icon-shopping_cart "></i>
+      <bubble class="bubble-wrapper" :count="this.$store.getters.getCount"></bubble>
+      <div class="logo" :class="{on:getPrice>0}">
+        <i class="icon-shopping_cart " :class="{on:getPrice>0}"></i>
       </div>
     </div>
     <div class="price-wrapper">
-      <span class="price">￥10</span>
+      <span class="price">￥{{getPrice}}</span>
     </div>
     <div class="deliver-pay-wrapper">
-      <p class="deliver-pay">另需配送费￥4元</p>
+      <p class="deliver-pay">另需配送费￥{{data.deliveryPrice}}元</p>
     </div>
     <div class="settlement-wrapper">
-      <div class="settlement-condition">
-        <p class="p-condition on">￥20元起送</p>
+      <div class="settlement-condition" :class="{on:getDesc==='去结算'}">
+        <p class="p-condition " :class="{on:getDesc==='去结算'}">{{getDesc}}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import bubble from '../bubble/bubble'
   export default {
-    name: 'shop-cart'
+    name: 'shop-cart',
+    components: {
+      bubble
+    },
+    props: {
+      data: {
+        type: Object
+      }
+    },
+    computed: {
+      getPrice() {
+        return this.$store.getters.getAllPrice
+      },
+      getDesc() {
+        let allPrice = this.$store.getters.getAllPrice
+        let minPrice = Number(this.data.minPrice)
+        if (allPrice === 0) {
+            return `￥${minPrice}元起送`
+        } else if (allPrice < minPrice) {
+          return `还差￥${(minPrice - allPrice)}元起送`
+        } else {
+          return '去结算'
+        }
+      }
+    }
   }
 </script>
 
@@ -47,6 +73,10 @@
       width 56px
       border-radius 50%
       background-color #07111b
+      .bubble-wrapper
+       position absolute
+       right 0
+       top 0
       .logo
         display flex
         align-items center

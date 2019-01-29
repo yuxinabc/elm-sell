@@ -18,8 +18,12 @@
     name: 'app',
     data () {
       return {
-        seller: {},
-        tabs: [
+        seller: {}
+      }
+    },
+    computed: {
+      tabs() {
+        return [
           { label: '商品', component: goods, data: this.seller },
           { label: '评价', component: evaluation, data: this.seller },
           { label: '商家', component: business, data: this.seller }
@@ -32,7 +36,7 @@
     methods: {
       _getSeller () {
         getSeller().then(seller => {
-          this.seller = seller
+         this.seller = seller
         })
       }
     },
