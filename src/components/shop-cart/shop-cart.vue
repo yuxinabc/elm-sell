@@ -5,6 +5,14 @@
       <div class="logo" :class="{on:getPrice>0}">
         <i class="icon-shopping_cart " :class="{on:getPrice>0}"></i>
       </div>
+        <transition v-for="(item,index) in bollList" :key="index"
+                    @before-enter="beforeDrop"
+                    @enter="dropping"
+                    @after-enter="afterDrop">
+          <div class="boll" v-if="item.show">
+            <span class="boll-inner" ></span>
+          </div>
+        </transition>
     </div>
     <div class="price-wrapper">
       <span class="price">￥{{getPrice}}</span>
@@ -22,6 +30,17 @@
 
 <script>
   import bubble from '../bubble/bubble'
+
+  const BOLL_LENGTH = 10
+
+  function _createBollList () {
+    let ret = []
+    for (let i = 0; i < BOLL_LENGTH; i++) {
+      ret.push({ show: false })
+    }
+    return ret
+  }
+
   export default {
     name: 'shop-cart',
     components: {
@@ -32,15 +51,58 @@
         type: Object
       }
     },
+    data () {
+      return {
+        bollList: _createBollList(),
+        droppingList: []
+      }
+    },
+    methods: {
+      beforeDrop (el) {
+        let boll = this.droppingList[this.droppingList.length - 1]
+        let addEL = boll.el
+        let addElRect = addEL.getBoundingClientRect()
+        let xDist = addElRect.left - 32
+        let yDist = -(window.innerHeight - addElRect.top - 22)
+        el.style.transform = el.style.webkitTransform = `translate3d(0,${yDist}px,0)`
+        let bollInner = el.getElementsByClassName('boll-inner')[0]
+        bollInner.style.transform = bollInner.style.webkitTransform = `translate3d(${xDist}px,0,0)`
+      },
+      dropping (el, done) {
+        this._reflow = document.body.offsetHeight
+        el.style.transition = el.style.webkitTransition = 'all .4s cubic-bezier(0.49, -0.29, 0.75, 0.41)'
+        el.style.transform = el.style.webkitTransform = 'translate3d(0,0,0)'
+        let bollInner = el.getElementsByClassName('boll-inner')[0]
+        bollInner.style.transition = bollInner.style.webkitTransition = 'all .4s linear'
+        bollInner.style.transform = bollInner.style.webkitTransform = 'translate3d(0,0,0)'
+        el.addEventListener('transitionend', done)
+      },
+      afterDrop (el) {
+        let ball = this.droppingList.shift()
+        if (ball) {
+          ball.show = false
+          el.style.display = 'none'
+        }
+      },
+      drop (el) {
+        // 通过控制显示，驱动动画的执行
+        let boll = this.bollList.find(item => {
+          return !item.show
+        })
+        boll.el = el
+        boll.show = true
+        this.droppingList.push(boll)
+      }
+    },
     computed: {
-      getPrice() {
+      getPrice () {
         return this.$store.getters.getAllPrice
       },
-      getDesc() {
+      getDesc () {
         let allPrice = this.$store.getters.getAllPrice
         let minPrice = Number(this.data.minPrice)
         if (allPrice === 0) {
-            return `￥${minPrice}元起送`
+          return `￥${minPrice}元起送`
         } else if (allPrice < minPrice) {
           return `还差￥${(minPrice - allPrice)}元起送`
         } else {
@@ -73,10 +135,18 @@
       width 56px
       border-radius 50%
       background-color #07111b
+      .boll
+          position absolute
+          .boll-inner
+            display inline-block
+            width 15px
+            height 15px
+            border-radius 50%
+            background #00A0DC
       .bubble-wrapper
-       position absolute
-       right 0
-       top 0
+        position absolute
+        right 0
+        top 0
       .logo
         display flex
         align-items center
@@ -86,7 +156,7 @@
         background-color #333
         border-radius 50%
         &.on
-         background-color #00A0DC
+          background-color #00A0DC
         .icon-shopping_cart
           font-size 24px
           color #999
@@ -98,19 +168,19 @@
       display flex
       align-items center
       .price
-       display flex
-       align-items center
-       color #999
-       font-weight 700
-       &.on
-         color white
-       &:after
-         content: ''
-         display inline-block
-         width 1px
-         height 24px
-         margin-left 12px
-         background-color rgba(255,255,255,.1)
+        display flex
+        align-items center
+        color #999
+        font-weight 700
+        &.on
+          color white
+        &:after
+          content: ''
+          display inline-block
+          width 1px
+          height 24px
+          margin-left 12px
+          background-color rgba(255, 255, 255, .1)
     .deliver-pay-wrapper
       margin-left 12px
       flex-grow 1
@@ -123,17 +193,17 @@
       flex 0 0 105px
       height 100%
       .settlement-condition
-       height 100%
-       display flex
-       justify-content center
-       align-items center
-       background-color #333
-       &.on
-        background-color #00B43C
+        height 100%
+        display flex
+        justify-content center
+        align-items center
+        background-color #333
+        &.on
+          background-color #00B43C
       .p-condition
         color #999
         font-size 12px
         font-weight 700
         &.on
-         color white
+          color white
 </style>

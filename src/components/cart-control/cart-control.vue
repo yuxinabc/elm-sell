@@ -33,11 +33,15 @@
         this.$store.commit('deleteFood', this.food)
         this.count = this.$store.getters.getFoodByName(this.food).count
         this.$store.commit('changePriceAndCount')
+        this.$store.commit('delItemCount', this.food)
       },
-      add () {
+      add (event) {
         this.$store.commit('addFoods', this.food)
         this.count = this.$store.getters.getFoodByName(this.food).count
         this.$store.commit('changePriceAndCount')
+        this.$store.commit('addItemCount', this.food)
+        // 派发事件
+        this.$emit('onAddClick', event.target)
       }
     }
   }

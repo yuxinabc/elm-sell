@@ -7,11 +7,12 @@ export default new Vuex.Store({
   state: {
     foods: [],
     allPrice: 0,
-    allCount: 0
+    allCount: 0,
+    countList: []
   },
   // 操作数据接口，可以定义多个方法
   mutations: {
-    addFoods(state, food) {
+    addFoods (state, food) {
       let item = state.foods.find(item => {
         return (item.name === food.name && item.foodTypeName === food.foodTypeName)
       })
@@ -22,7 +23,7 @@ export default new Vuex.Store({
         state.foods.push(food)
       }
     },
-    deleteFood(state, food) {
+    deleteFood (state, food) {
       let item = state.foods.find(item => {
         return (item.name === food.name && item.foodTypeName === food.foodTypeName)
       })
@@ -34,26 +35,57 @@ export default new Vuex.Store({
         }))
       }
     },
-    changePriceAndCount(state) {
-      let foods = state.foods
+    changePriceAndCount (state) {
       state.allPrice = 0
       state.allCount = 0
-      foods.forEach(item => {
+      state.foods.forEach(item => {
         state.allPrice += Number(item.price) * item.count
         state.allCount += item.count
       })
+    },
+    addItemCount (state, food) {
+      let key = food.foodTypeName
+      let item = state.countList.find(item => {
+        return item[key]
+      })
+      if (item) {
+        item[key]++
+      } else {
+        let item = {}
+        item[key] = parseInt(food.count)
+        state.countList.push(item)
+      }
+    },
+    delItemCount (state, food) {
+      let key = food.foodTypeName
+      let item = state.countList.find(item => {
+        return item[key]
+      })
+      if (item) {
+        item[key]--
+      }
     }
   },
   // 计算属性
   getters: {
-    getCount(state) {
+    getCount (state) {
       return state.allCount
     },
-    getAllPrice(state) {
+    getItemCount: (state) => (key) => {
+      let item = state.countList.find(item => {
+        return item[key]
+      })
+      if (item) {
+        return item[key]
+      } else {
+        return 0
+      }
+    },
+    getAllPrice (state) {
       return state.allPrice
     },
     getFoodByName: (state) => (food) => {
-     return state.foods.find(item => (item.name === food.name && item.foodTypeName === food.foodTypeName))
+      return state.foods.find(item => (item.name === food.name && item.foodTypeName === food.foodTypeName))
     }
   }
 

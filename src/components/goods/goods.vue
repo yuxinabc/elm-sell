@@ -25,9 +25,9 @@
                   :type="props.txt.type"
                 ></support-icon>
                 <span>{{props.txt.name}}</span>
-                <!--<span class="num" v-if="props.txt.count">
-                    <bubble :num="props.txt.count"></bubble>
-                </span>-->
+                <div class="bubble-wrapper">
+                  <bubble :count="$store.getters.getItemCount(props.txt.name)"></bubble>
+                </div>
               </div>
             </template>
           </cube-scroll-nav-bar>
@@ -52,14 +52,14 @@
                   <span class="now">￥{{food.price}}</span>
                   <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
-                <cart-control :data="foodWrapper(food,good.name)"></cart-control>
+                <cart-control :data="foodWrapper(food,good.name)" @onAddClick="addClick"></cart-control>
               </div>
             </li>
           </ul>
         </cube-scroll-nav-panel>
       </cube-scroll-nav>
     </div>
-    <shop-cart :data="cartInfo"></shop-cart>
+    <shop-cart :data="cartInfo" ref="shopCart"></shop-cart>
   </div>
 </template>
 
@@ -68,12 +68,14 @@
   import ShopCart from '../shop-cart/shop-cart'
   import CartControl from '../cart-control/cart-control'
   import { getGoods } from '../../api'
+  import bubble from '../bubble/bubble'
   export default {
     name: 'goods',
     components: {
       SupportIcon,
       ShopCart,
-      CartControl
+      CartControl,
+      bubble
     },
     props: {
       data: {
@@ -115,6 +117,9 @@
       }
     },
     methods: {
+      addClick(el) {
+        this.$refs.shopCart.drop(el)
+      },
       foodWrapper(food, name) {
         food.foodTypeName = name
         return food
@@ -158,17 +163,22 @@
           height 56px
         .txt
           width 100%
+          position relative
           .support-ico
             display: inline-block
             vertical-align: top
             margin-right: 4px
           span
-           font-size 12px
-           margin: 0
-           padding: 0
-           border: 0
-           font-weight: normal
-           vertical-align: text-top
+            font-size 12px
+            margin: 0
+            padding: 0
+            border: 0
+            font-weight: normal
+            vertical-align: text-top
+          .bubble-wrapper
+            position absolute
+            top -10px
+            right -10px
       .cube-scroll-wrapper
         .cube-sticky-fixed
           .cube-sticky-content
