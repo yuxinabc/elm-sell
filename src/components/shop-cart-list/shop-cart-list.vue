@@ -8,7 +8,7 @@
           <a href="">清空</a>
         </div>
         <ul class="goods-list">
-          <li class="good-item" v-for="(item, index) in filterFoods" :key="index">
+          <li class="good-item" v-for="(item, index) in filterFoods" :key="index" >
             <span class="food-name">{{item.name}}</span>
             <span class="price">￥{{item.price}}</span>
             <cart-control class="food-control" :data="item"></cart-control>
