@@ -32,11 +32,10 @@
     },
     computed: {
       filterFoods() {
-      let foods = this.foods.filter(item => {
-        let key = item.foodTypeName + item.name
+        return this.foods.filter(item => {
+           let key = item.foodTypeName + item.name
            return this.$store.getters.getFoodItemCount(key) > 0
         })
-        return foods
       }
     },
     data() {
