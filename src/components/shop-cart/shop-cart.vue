@@ -1,5 +1,5 @@
 <template>
-  <div class="shop-cart-wrapper">
+  <div class="shop-cart-wrapper" @click="toggleList">
     <div class="logo-wrapper">
       <bubble class="bubble-wrapper" :count="this.$store.getters.getCount"></bubble>
       <div class="logo" :class="{on:getPrice>0}">
@@ -58,6 +58,14 @@
       }
     },
     methods: {
+      toggleList() {
+        this.shopCartListComp = this.shopCartListComp || this.$createShopCartList({
+          $props: {
+            foods: this.$store.getters.getAllFoods
+          }
+        })
+        this.shopCartListComp.toggle()
+      },
       beforeDrop (el) {
         let boll = this.droppingList[this.droppingList.length - 1]
         let addEL = boll.el

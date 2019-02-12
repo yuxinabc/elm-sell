@@ -5,10 +5,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   // 存储数据对象
   state: {
-    foods: [],
-    allPrice: 0,
-    allCount: 0,
-    countList: []
+    foods: [], // 存所有商品对象
+    allPrice: 0, // 存所有商品价格
+    allCount: 0, // 存所有商品数量
+    countList: [], // 存侧边栏每一类的商品数量
+    itemCountList: [] // 存右边栏每一行商品的数量
   },
   // 操作数据接口，可以定义多个方法
   mutations: {
@@ -43,6 +44,7 @@ export default new Vuex.Store({
         state.allCount += item.count
       })
     },
+    // 对左侧边栏分类的数量操作
     addItemCount (state, food) {
       let key = food.foodTypeName
       let item = state.countList.find(item => {
@@ -59,6 +61,29 @@ export default new Vuex.Store({
     delItemCount (state, food) {
       let key = food.foodTypeName
       let item = state.countList.find(item => {
+        return item[key]
+      })
+      if (item) {
+        item[key]--
+      }
+    },
+    // 对右侧边栏分类的数量操作
+    addFoodItemCount(state, food) {
+      let key = food.foodTypeName + food.name
+      let item = state.itemCountList.find(item => {
+        return item[key]
+      })
+      if (item) {
+        item[key]++
+      } else {
+        let item = {}
+        item[key] = parseInt(food.count)
+        state.itemCountList.push(item)
+      }
+    },
+    delFoodItemCount (state, food) {
+      let key = food.foodTypeName + food.name
+      let item = state.itemCountList.find(item => {
         return item[key]
       })
       if (item) {
@@ -81,11 +106,21 @@ export default new Vuex.Store({
         return 0
       }
     },
+    getFoodItemCount: (state) => (key) => {
+      let item = state.itemCountList.find(item => {
+        return item[key]
+      })
+      if (item) {
+        return item[key]
+      } else {
+        return 0
+      }
+    },
     getAllPrice (state) {
       return state.allPrice
     },
-    getFoodByName: (state) => (food) => {
-      return state.foods.find(item => (item.name === food.name && item.foodTypeName === food.foodTypeName))
+    getAllFoods (state) {
+      return state.foods
     }
   }
 
