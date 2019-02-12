@@ -22,29 +22,31 @@
         type: Object
       }
     },
-    data () {
+    // 在计算属性中，最好直接使用props数据，而不是在data中定义引用
+    /* data() {
       return {
         food: this.data
       }
-    },
+    }, */
     computed: {
       countNum() {
-        let key = this.food.foodTypeName + this.food.name
+        // let key1 = this.food.foodTypeName + this.food.name
+        let key = this.data.foodTypeName + this.data.name
         return this.$store.getters.getFoodItemCount(key)
       }
     },
     methods: {
       remove () {
-        this.$store.commit('deleteFood', this.food)
+        this.$store.commit('deleteFood', this.data)
         this.$store.commit('changePriceAndCount')
-        this.$store.commit('delItemCount', this.food)
-        this.$store.commit('delFoodItemCount', this.food)
+        this.$store.commit('delItemCount', this.data)
+        this.$store.commit('delFoodItemCount', this.data)
       },
       add (event) {
-        this.$store.commit('addFoods', this.food)
+        this.$store.commit('addFoods', this.data)
         this.$store.commit('changePriceAndCount')
-        this.$store.commit('addItemCount', this.food)
-        this.$store.commit('addFoodItemCount', this.food)
+        this.$store.commit('addItemCount', this.data)
+        this.$store.commit('addFoodItemCount', this.data)
         // 派发事件
         this.$emit('onAddClick', event.target)
       }

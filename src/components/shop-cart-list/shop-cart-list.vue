@@ -32,10 +32,14 @@
     },
     computed: {
       filterFoods() {
-        return this.foods.filter(item => {
+        let foods = this.foods.filter(item => {
            let key = item.foodTypeName + item.name
            return this.$store.getters.getFoodItemCount(key) > 0
         })
+        if (foods.length === 0) {
+            this.dismiss()
+        }
+        return foods
       }
     },
     data() {
@@ -49,6 +53,9 @@
         this.isShow = false
       },
       toggle() {
+        if (this.filterFoods.length === 0) {
+           return
+        }
         if (!this.isShow) {
           this.$refs.popup.show()
         } else {
