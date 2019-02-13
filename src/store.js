@@ -13,6 +13,13 @@ export default new Vuex.Store({
   },
   // 操作数据接口，可以定义多个方法
   mutations: {
+    delAllData(state) {
+      state.foods = []
+      state.allPrice = 0
+      state.allCount = 0
+      state.countList = []
+      state.itemCountList = []
+    },
     addFoods (state, food) {
       let item = state.foods.find(item => {
         return (item.name === food.name && item.foodTypeName === food.foodTypeName)
@@ -23,6 +30,7 @@ export default new Vuex.Store({
         food.count = 1
         state.foods.push(food)
       }
+      console.log('addFoods  ' + state.foods.length)
     },
     deleteFood (state, food) {
       let item = state.foods.find(item => {

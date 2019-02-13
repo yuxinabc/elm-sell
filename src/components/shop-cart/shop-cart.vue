@@ -59,11 +59,7 @@
     },
     methods: {
       toggleList() {
-        this.shopCartListComp = this.shopCartListComp || this.$createShopCartList({
-          $props: {
-            foods: this.$store.getters.getAllFoods
-          }
-        })
+        this.shopCartListComp = this.shopCartListComp || this.$createShopCartList()
         this.shopCartListComp.toggle()
       },
       beforeDrop (el) {
