@@ -8,7 +8,7 @@
         <div class="content" v-show="isShow">
           <div class="title-wrapper">
             <span>购物车</span>
-            <a href="" @click.prevent="emptyCart">清空</a>
+            <a href="" @click.prevent="showEmptyCartDialog">清空</a>
           </div>
             <cube-scroll  class="my-cube-scroll" ref="listContent">
               <ul class="goods-list">
@@ -57,6 +57,27 @@
       }
     },
     methods: {
+      showEmptyCartDialog() {
+        this.$createDialog({
+          type: 'confirm',
+          content: '清空购物车？',
+          confirmBtn: {
+            text: '确定',
+            active: true,
+            disabled: false,
+            href: 'javascript:;'
+          },
+          cancelBtn: {
+            text: '取消',
+            active: false,
+            disabled: false,
+            href: 'javascript:;'
+          },
+          onConfirm: () => {
+           this.emptyCart()
+          }
+        }).show()
+      },
       emptyCart() {
         this.$store.commit('delAllData')
         this.dismiss()
