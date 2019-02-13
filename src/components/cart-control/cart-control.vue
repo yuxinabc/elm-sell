@@ -22,17 +22,21 @@
         type: Object
       }
     },
-    // 在计算属性中，最好直接使用props数据，而不是在data中定义引用
-    /* data() {
+    // 在计算属性中，最好直接使用props数据，而不是在data中定义引用,若props可变，则需要watch然后重新赋值给data()中的变量
+     data() {
       return {
         food: this.data
       }
-    }, */
+    },
     computed: {
       countNum() {
-        // let key1 = this.food.foodTypeName + this.food.name
-        let key = this.data.foodTypeName + this.data.name
+       let key = this.food.foodTypeName + this.food.name
         return this.$store.getters.getFoodItemCount(key)
+      }
+    },
+    watch: {
+      data(newV, oldV) {
+        this.food = newV
       }
     },
     methods: {
@@ -41,6 +45,7 @@
         this.$store.commit('changePriceAndCount')
         this.$store.commit('delItemCount', this.data)
         this.$store.commit('delFoodItemCount', this.data)
+        this.$emit('onDelClick', event.target)
       },
       add (event) {
         this.$store.commit('addFoods', this.data)

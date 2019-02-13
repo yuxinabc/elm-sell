@@ -11,7 +11,7 @@
           <li class="good-item" v-for="(item, index) in filterFoods" :key="index" >
             <span class="food-name">{{item.name}}</span>
             <span class="price">￥{{item.price}}</span>
-            <cart-control class="food-control" :data="item"></cart-control>
+            <cart-control class="food-control" :data="item" @onDelClick="delClick"></cart-control>
           </li>
         </ul>
       </div>
@@ -32,14 +32,10 @@
     },
     computed: {
       filterFoods() {
-        let foods = this.foods.filter(item => {
+        return this.foods.filter(item => {
            let key = item.foodTypeName + item.name
            return this.$store.getters.getFoodItemCount(key) > 0
         })
-        if (foods.length === 0) {
-            this.dismiss()
-        }
-        return foods
       }
     },
     data() {
@@ -48,6 +44,11 @@
       }
     },
     methods: {
+      delClick() {
+        if (this.filterFoods.length === 0) {
+           this.dismiss()
+        }
+      },
       dismiss() {
         this.$refs.popup.hide()
         this.isShow = false
