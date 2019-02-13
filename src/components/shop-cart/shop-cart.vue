@@ -49,6 +49,10 @@
     props: {
       data: {
         type: Object
+      },
+      sticky: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -59,8 +63,19 @@
     },
     methods: {
       toggleList() {
-        this.shopCartListComp = this.shopCartListComp || this.$createShopCartList()
-        this.shopCartListComp.toggle()
+        if (!this.sticky) {
+          this.shopCartListComp = this.shopCartListComp || this.$createShopCartList()
+          this.shopCartStickyComp = this.shopCartStickyComp || this.$createShopCartSticky({
+            $props: {
+              cartInfo: {
+                minPrice: this.data.minPrice,
+                deliveryPrice: this.data.deliveryPrice
+              },
+              shopCartListComp: this.shopCartListComp
+            }
+          })
+          this.shopCartListComp.toggle(this.shopCartStickyComp)
+        }
       },
       beforeDrop (el) {
         let boll = this.droppingList[this.droppingList.length - 1]

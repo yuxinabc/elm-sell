@@ -57,6 +57,12 @@
       }
     },
     methods: {
+      dismissCartSticky() {
+        this.timeId = setInterval(() => {
+          this.shopCartStickyComp.hide()
+          clearInterval(this.timeId)
+        }, 300)
+      },
       showEmptyCartDialog() {
         this.$createDialog({
           type: 'confirm',
@@ -89,12 +95,19 @@
       },
       dismiss() {
         this.isShow = false
+        this.dismissCartSticky()
       },
-      toggle() {
+      toggle(shopCartStickyComp) {
+        this.shopCartStickyComp = shopCartStickyComp || this.shopCartStickyComp
         if (this.filterFoods.length === 0) {
            return
         }
         this.isShow = !this.isShow
+        if (this.isShow) {
+          this.shopCartStickyComp.show()
+        } else {
+          this.dismissCartSticky()
+        }
       }
     }
   }
@@ -111,7 +124,6 @@
   .content
     background-color  white
     &.move-enter, &.move-leave-to
-     opacity 0
      transform translate3d(0,100%,0)
     &.move-enter-active,&.move-leave-active
      transition all .3s
