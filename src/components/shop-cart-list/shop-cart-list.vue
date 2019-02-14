@@ -36,11 +36,6 @@
     components: {
       CartControl
     },
-    props: {
-      comp: {
-          type: Object
-      }
-    },
     created() {
       this.$on(SHOW, () => {
         this.$nextTick(() => {
@@ -62,8 +57,10 @@
       },
       dismissShopCartSticky() {
         this.timeId = setInterval(() => {
-          this.shopCartStickyComp.hide()
           clearInterval(this.timeId)
+          if (this.shopCartStickyComp) {
+            this.shopCartStickyComp.hide()
+          }
         }, 300)
       },
       showEmptyCartDialog() {
@@ -107,7 +104,9 @@
            return
         }
         this.visible ? this.hide() : this.show()
-        this.visible ? this.shopCartStickyComp.show() : this.dismissShopCartSticky()
+        if (this.shopCartStickyComp) {
+          this.visible ? this.shopCartStickyComp.show() : this.dismissShopCartSticky()
+        }
       }
     }
   }

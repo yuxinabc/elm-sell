@@ -39,7 +39,7 @@
           :label="good.name"
           :title="good.name">
           <ul class="goods-list">
-            <li class="goods-item" v-for="(food,index) in good.foods" :key="index">
+            <li class="goods-item" v-for="(food,index) in good.foods" :key="index" @click.stop="goToFood(food)">
               <img :src="food.icon">
               <div class="content">
                 <h2>{{food.name}}</h2>
@@ -117,6 +117,15 @@
       }
     },
     methods: {
+      goToFood(food) {
+        this.createFoodComp = this.createFoodComp || this.$createFood({
+          $props: {
+            food: food,
+            cartInfo: this.cartInfo
+          }
+        })
+        this.createFoodComp.show()
+      },
       addClick(el) {
         this.$refs.shopCart.drop(el)
       },
