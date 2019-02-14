@@ -65,10 +65,35 @@
       goToSettlement() {
         if (this.getDesc === '去结算') {
           this._showPayDialog(this.$store.getters.getAllPrice)
+        } else {
+          if (!this.sticky) {
+            this._createComp()
+            this.shopCartListComp.toggle(this.shopCartStickyComp)
+          } else {
+            this.$emit('goToSettlement')
+          }
         }
       },
+      _createComp() {
+        this.shopCartListComp = this.shopCartListComp || this.$createShopCartList({
+          $events: {
+            addClick: (el) => {
+                this.shopCartStickyComp && this.shopCartStickyComp.drop(el)
+            }
+          }
+        })
+        this.shopCartStickyComp = this.shopCartStickyComp || this.$createShopCartSticky({
+          $props: {
+            cartInfo: {
+              minPrice: this.data.minPrice,
+              deliveryPrice: this.data.deliveryPrice
+            },
+            shopCartListComp: this.shopCartListComp
+          }
+        })
+      },
       _showPayDialog(money) {
-        this.$createDialog({
+       this.createDialogComp = this.createDialogComp || this.$createDialog({
           type: 'alert',
           title: '支付',
           content: `您需要支付${money}元`,
@@ -80,20 +105,12 @@
           },
           onConfirm: () => {
           }
-        }).show()
+        })
+        this.createDialogComp.show()
       },
       toggleList() {
         if (!this.sticky) {
-          this.shopCartListComp = this.shopCartListComp || this.$createShopCartList()
-          this.shopCartStickyComp = this.shopCartStickyComp || this.$createShopCartSticky({
-            $props: {
-              cartInfo: {
-                minPrice: this.data.minPrice,
-                deliveryPrice: this.data.deliveryPrice
-              },
-              shopCartListComp: this.shopCartListComp
-            }
-          })
+          this._createComp()
           this.shopCartListComp.toggle(this.shopCartStickyComp)
         }
       },

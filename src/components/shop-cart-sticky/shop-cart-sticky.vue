@@ -1,13 +1,15 @@
 <template>
-    <div class="shop-cart-sticky" v-show="isShow" @click="click">
-      <shop-cart :data="cartInfo" :sticky="true"></shop-cart>
+    <div class="shop-cart-sticky" v-show="visible" @click.stop="click">
+      <shop-cart :data="cartInfo" :sticky="true" @goToSettlement="click" ref="shopCart"></shop-cart>
     </div>
 </template>
 
 <script>
   import ShopCart from '../shop-cart/shop-cart'
+  import PopupMixins from '../../common/mixins/popup'
   export default {
     name: 'shop-cart-sticky',
+    mixins: [PopupMixins],
     components: {
       ShopCart
     },
@@ -22,20 +24,12 @@
         type: Object
       }
     },
-    data() {
-      return {
-        isShow: true
-      }
-    },
     methods: {
-       show() {
-         this.isShow = true
-       },
-      hide() {
-        this.isShow = false
-      },
       click() {
         this.shopCartListComp.toggle()
+      },
+      drop(el) {
+         this.$refs.shopCart.drop(el)
       }
     }
   }

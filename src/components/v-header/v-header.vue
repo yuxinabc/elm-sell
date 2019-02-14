@@ -55,7 +55,7 @@
             seller: this.seller
           }
         })
-        this.headerDetailComp.open()
+        this.headerDetailComp.show()
       }
     }
   }

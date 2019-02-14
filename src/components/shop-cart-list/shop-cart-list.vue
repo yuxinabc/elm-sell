@@ -3,9 +3,9 @@
     <cube-popup ref="popup"
                 type="cart-list-popup"
                 :zIndex="90"
-                position="bottom" maskClosable @mask-click="dismiss" v-show="isShow">
+                position="bottom" maskClosable @mask-click="dismiss" v-show="visible">
       <transition name="move">
-        <div class="content" v-show="isShow">
+        <div class="content" v-show="visible">
           <div class="title-wrapper">
             <span>购物车</span>
             <a href="" @click.prevent="showEmptyCartDialog">清空</a>
@@ -16,7 +16,7 @@
                   <span class="food-name">{{item.name}}</span>
                   <div class="price-cart-wrapper">
                     <span class="price">￥{{item.price}}</span>
-                    <cart-control class="food-control" :data="item" @onDelClick="delClick"></cart-control>
+                    <cart-control  class="food-control" :data="item" @onDelClick="delClick" @onAddClick="addClick"></cart-control>
                   </div>
                 </li>
               </ul>
@@ -29,10 +29,24 @@
 
 <script>
   import CartControl from '../cart-control/cart-control'
+  import PopupMixins, { SHOW } from '../../common/mixins/popup'
   export default {
     name: 'shop-cart-list',
+    mixins: [PopupMixins],
     components: {
       CartControl
+    },
+    props: {
+      comp: {
+          type: Object
+      }
+    },
+    created() {
+      this.$on(SHOW, () => {
+        this.$nextTick(() => {
+          this.$refs.listContent.refresh()
+        })
+      })
     },
     computed: {
       filterFoods() {
@@ -42,29 +56,18 @@
         })
       }
     },
-    data() {
-      return {
-        isShow: false
-      }
-    },
-    watch: {
-      isShow(newV, oldV) {
-       if (newV) {
-         this.$nextTick(() => {
-           this.$refs.listContent.refresh()
-        })
-       }
-      }
-    },
     methods: {
-      dismissCartSticky() {
+      addClick(el) {
+        this.$emit('addClick', el)
+      },
+      dismissShopCartSticky() {
         this.timeId = setInterval(() => {
           this.shopCartStickyComp.hide()
           clearInterval(this.timeId)
         }, 300)
       },
       showEmptyCartDialog() {
-        this.$createDialog({
+      this.createDialogComp = this.createDialogComp || this.$createDialog({
           type: 'confirm',
           content: '清空购物车？',
           confirmBtn: {
@@ -82,7 +85,8 @@
           onConfirm: () => {
            this.emptyCart()
           }
-        }).show()
+        })
+        this.createDialogComp.show()
       },
       emptyCart() {
         this.$store.commit('delAllData')
@@ -94,20 +98,16 @@
         }
       },
       dismiss() {
-        this.isShow = false
-        this.dismissCartSticky()
+        this.hide()
+        this.dismissShopCartSticky()
       },
       toggle(shopCartStickyComp) {
         this.shopCartStickyComp = shopCartStickyComp || this.shopCartStickyComp
         if (this.filterFoods.length === 0) {
            return
         }
-        this.isShow = !this.isShow
-        if (this.isShow) {
-          this.shopCartStickyComp.show()
-        } else {
-          this.dismissCartSticky()
-        }
+        this.visible ? this.hide() : this.show()
+        this.visible ? this.shopCartStickyComp.show() : this.dismissShopCartSticky()
       }
     }
   }

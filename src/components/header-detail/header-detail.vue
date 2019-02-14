@@ -22,7 +22,7 @@
           </div>
         </div>
       </div>
-      <div class="detail-close" @click="close">
+      <div class="detail-close" @click="hide">
         <i class="icon-close"></i>
       </div>
     </div>
@@ -33,31 +33,20 @@
   import star from '../star/star'
   import LineTitle from '../line-title/line-title'
   import SupportIcon from '../support-icon/support-icon'
+  import PopupMixins from '../../common/mixins/popup'
 
   export default {
     name: 'header-detail',
+    mixins: [PopupMixins],
     props: {
       seller: {
         type: Object
-      }
-    },
-    data() {
-      return {
-        visible: false
       }
     },
     components: {
       star,
       LineTitle,
       SupportIcon
-    },
-    methods: {
-      close() {
-        this.visible = false
-      },
-      open() {
-        this.visible = true
-      }
     }
   }
 </script>
