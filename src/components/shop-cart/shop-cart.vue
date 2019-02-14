@@ -20,7 +20,7 @@
     <div class="deliver-pay-wrapper">
       <p class="deliver-pay">另需配送费￥{{data.deliveryPrice}}元</p>
     </div>
-    <div class="settlement-wrapper">
+    <div class="settlement-wrapper" @click.stop="goToSettlement">
       <div class="settlement-condition" :class="{on:getDesc==='去结算'}">
         <p class="p-condition " :class="{on:getDesc==='去结算'}">{{getDesc}}</p>
       </div>
@@ -62,6 +62,26 @@
       }
     },
     methods: {
+      goToSettlement() {
+        if (this.getDesc === '去结算') {
+          this._showPayDialog(this.$store.getters.getAllPrice)
+        }
+      },
+      _showPayDialog(money) {
+        this.$createDialog({
+          type: 'alert',
+          title: '支付',
+          content: `您需要支付${money}元`,
+          confirmBtn: {
+            text: '确定',
+            active: true,
+            disabled: false,
+            href: 'javascript:;'
+          },
+          onConfirm: () => {
+          }
+        }).show()
+      },
       toggleList() {
         if (!this.sticky) {
           this.shopCartListComp = this.shopCartListComp || this.$createShopCartList()
