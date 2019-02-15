@@ -45,7 +45,9 @@ import {
   Swipe,
   Sticky,
   ScrollNav,
-  ScrollNavBar
+  ScrollNavBar,
+  // checker
+  Checker
 } from 'cube-ui'
 
 Vue.use(Button)
@@ -84,3 +86,4 @@ Vue.use(Swipe)
 Vue.use(Sticky)
 Vue.use(ScrollNav)
 Vue.use(ScrollNavBar)
+Vue.use(Checker)

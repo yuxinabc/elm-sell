@@ -25,6 +25,7 @@
           <p class="info">{{food.info}}</p>
         </div>
         <split></split>
+        <comment class="comment-box" :data="food.ratings"></comment>
       </cube-scroll>
     </div>
   </transition>
@@ -34,12 +35,13 @@
 <script>
   import PopupMixin, { SHOW } from '../../common/mixins/popup'
   import Split from '../split/split'
-
+  import Comment from '../comment/comment'
   export default {
     name: 'food',
     mixins: [PopupMixin],
     components: {
-      Split
+      Split,
+      Comment
     },
     props: {
       food: {
@@ -161,4 +163,6 @@
           line-height 24px
           color #666
           padding 0 8px
+      .comment-box
+        padding 18px
 </style>
