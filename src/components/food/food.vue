@@ -1,11 +1,30 @@
 <template>
   <transition name="move" @after-leave="afterLeave">
     <div class="food" v-show="visible">
-      <cube-scroll class="my-cube-scroll">
+      <cube-scroll class="my-cube-scroll" ref="cubeScroll">
         <div class="back" @click.stop="back">
           <i class="icon-arrow_lift"></i>
         </div>
-        <img class="food-pic" :src="food.image" alt="">
+        <div class="img-box">
+          <img class="food-pic" :src="food.image" alt="">
+        </div>
+        <div class="brief-introduction-wrapper">
+          <h1 class="food-name">{{food.name}}</h1>
+          <div class="sale-info">
+            <span class="sell-out">月售{{food.sellCount}}份</span>
+            <span class="rate">好评率{{food.rating}}%</span>
+          </div>
+          <div class="purchase-wrapper">
+            <span class="price">￥{{food.price}}</span>
+            <cube-button class="bt-add" active inline>加入购物车</cube-button>
+          </div>
+        </div>
+        <split></split>
+        <div class="food-info">
+          <h1 class="title">商品信息</h1>
+          <p class="info">{{food.info}}</p>
+        </div>
+        <split></split>
       </cube-scroll>
     </div>
   </transition>
@@ -14,10 +33,14 @@
 
 <script>
   import PopupMixin, { SHOW } from '../../common/mixins/popup'
+  import Split from '../split/split'
 
   export default {
     name: 'food',
     mixins: [PopupMixin],
+    components: {
+      Split
+    },
     props: {
       food: {
         type: Object
@@ -26,8 +49,9 @@
         type: Object
       }
     },
+
     methods: {
-      _createComp(cartInfo) {
+      _createComp (cartInfo) {
         this.shopCartListComp = this.shopCartListComp || this.$createShopCartList({
           $events: {
             addClick: (el) => {
@@ -42,45 +66,99 @@
           }
         })
       },
-      back() {
+      back () {
         this.hide()
       },
-      afterLeave() {
+      afterLeave () {
         this.shopCartStickyComp.hide()
       }
     },
-    created() {
+    created () {
       this.$on(SHOW, () => {
         this._createComp(this.cartInfo)
         this.shopCartStickyComp.show()
+        this.$nextTick(() => {
+          this.$refs.cubeScroll.refresh()
+        })
       })
     }
   }
 </script>
 
 <style lang="stylus" scoped>
- .food
-   position fixed
-   top 0
-   left 0
-   bottom 47px
-   width 100%
-   background red
-   z-index 90
-   &.move-enter,&.move-leave-to
-    opacity 0
-    transform translate3d(100%,0,0)
-   &.move-enter-active,&.move-leave-active
-    transition all .5s ease
-   .my-cube-scroll
-     height 100%
-     .back
-       position absolute
-       top 10px
-       left: 0
-       padding 10px
-       font-size 20px
-       color  white
-     .food-pic
-       width 100%
+  .food
+    position fixed
+    top 0
+    left 0
+    bottom 47px
+    width 100%
+    background white
+    z-index 90
+    &.move-enter, &.move-leave-to
+      opacity 0
+      transform translate3d(100%, 0, 0)
+    &.move-enter-active, &.move-leave-active
+      transition all .5s ease
+    .my-cube-scroll
+      height 100%
+      .back
+        position absolute
+        top 10px
+        left: 0
+        padding 10px
+        font-size 20px
+        color white
+        z-index 999
+      .img-box
+        width 100%
+        height 0
+        padding-top 100%
+        overflow hidden
+        position relative
+        .food-pic
+          position absolute
+          left 0
+          top 0
+          width 100%
+          height 100%
+      .brief-introduction-wrapper
+        padding 18px
+        .food-name
+          color #333
+          font-size 14px
+          line-height: 14px
+          font-weight 700
+          margin-bottom 8px
+        .sale-info
+          color #999
+          font-size 10px
+          line-height 10px
+          height 10px
+          margin-bottom 18px
+          .sell-out
+            margin-right 12px
+        .purchase-wrapper
+          display flex
+          justify-content space-between
+          align-items center
+          .price
+            color #f01414
+            font-size 14px
+          .bt-add
+            border-radius 20px
+            height 24px
+            padding 0 12px
+            background-color #00a0dc
+      .food-info
+        padding 18px
+        .title
+          font-size 14px
+          ine-height 14px
+          color #333
+          margin-bottom 6px
+        .info
+          font-size 12px
+          line-height 24px
+          color #666
+          padding 0 8px
 </style>

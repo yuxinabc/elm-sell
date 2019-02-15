@@ -89,7 +89,8 @@
         scrollOptions: {
           click: false,
           directionLockThreshold: 0
-        }
+        },
+        selectedFood: {}
       }
     },
     computed: {
@@ -118,9 +119,10 @@
     },
     methods: {
       goToFood(food) {
+        this.selectedFood = food
         this.createFoodComp = this.createFoodComp || this.$createFood({
           $props: {
-            food: food,
+            food: 'selectedFood',
             cartInfo: this.cartInfo
           }
         })
