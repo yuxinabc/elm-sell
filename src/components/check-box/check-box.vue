@@ -23,7 +23,8 @@
       }
     },
     methods: {
-      click() {
+      click(e) {
+        console.log(e)
        this.checked_ = !this.checked_
        this.$emit('onChecked', this.checked_)
       }

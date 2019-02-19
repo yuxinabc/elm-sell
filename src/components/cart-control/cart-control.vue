@@ -23,19 +23,20 @@
       }
     },
     // 在计算属性中，最好直接使用props数据，而不是在data中定义引用,若props可变，则需要watch然后重新赋值给data()中的变量
-     data() {
+    data () {
       return {
         food: this.data
       }
     },
     computed: {
-      countNum() {
-       let key = this.food.foodTypeName + this.food.name
+      countNum () {
+        let key = this.food.foodTypeName + this.food.name
+        this.$emit('showCart', this.$store.getters.getFoodItemCount(key) > 0)
         return this.$store.getters.getFoodItemCount(key)
       }
     },
     watch: {
-      data(newV, oldV) {
+      data (newV, oldV) {
         this.food = newV
       }
     },

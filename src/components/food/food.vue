@@ -16,7 +16,11 @@
           </div>
           <div class="purchase-wrapper">
             <span class="price">￥{{food.price}}</span>
-            <cube-button class="bt-add" active inline>加入购物车</cube-button>
+            <cart-control :data="food"  @showCart="showCart" @onAddClick="onAddClick"></cart-control>
+            <transition name="fade">
+              <cube-button class="bt-add" active inline @click="addToCart" v-show="!showCartControl">加入购物车</cube-button>
+            </transition>
+
           </div>
         </div>
         <split></split>
@@ -25,7 +29,7 @@
           <p class="info">{{food.info}}</p>
         </div>
         <split></split>
-        <comment class="comment-box" :data="food.ratings"></comment>
+        <comment class="comment-box" :data="food.ratings" :checks="titleList" :title="'商品评价'"></comment>
       </cube-scroll>
     </div>
   </transition>
@@ -36,12 +40,14 @@
   import PopupMixin, { SHOW } from '../../common/mixins/popup'
   import Split from '../split/split'
   import Comment from '../comment/comment'
+  import CartControl from '../cart-control/cart-control'
   export default {
     name: 'food',
     mixins: [PopupMixin],
     components: {
       Split,
-      Comment
+      Comment,
+      CartControl
     },
     props: {
       food: {
@@ -51,8 +57,31 @@
         type: Object
       }
     },
-
+    data() {
+      return {
+        showCartControl: false,
+        titleList: [
+          { text: '全部', type: 0 },
+          { text: '推荐', type: 0 },
+          { text: '吐槽', type: 1 }
+        ]
+      }
+    },
     methods: {
+      onAddClick(el) {
+        this.shopCartStickyComp.drop(el)
+      },
+      showCart(showCart) {
+       this.showCartControl = showCart
+      },
+      addToCart(event) {
+        console.log(event.target)
+        this.shopCartStickyComp.drop(event.target)
+        this.$store.commit('addFoods', this.food)
+        this.$store.commit('changePriceAndCount')
+        this.$store.commit('addItemCount', this.food)
+        this.$store.commit('addFoodItemCount', this.food)
+      },
       _createComp (cartInfo) {
         this.shopCartListComp = this.shopCartListComp || this.$createShopCartList({
           $events: {
@@ -141,16 +170,26 @@
             margin-right 12px
         .purchase-wrapper
           display flex
+          position relative
           justify-content space-between
           align-items center
+          height 24px
+          .cart-control
+            right 0
           .price
             color #f01414
             font-size 14px
           .bt-add
+            position relative
+            z-index 999
             border-radius 20px
             height 24px
             padding 0 12px
             background-color #00a0dc
+            &.fade-enter,&.fade-leave-to
+              opacity 0
+            &.fade-enter-active,&.fade-leave-active
+              transition all .5s
       .food-info
         padding 18px
         .title

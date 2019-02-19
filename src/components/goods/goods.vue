@@ -39,7 +39,7 @@
           :label="good.name"
           :title="good.name">
           <ul class="goods-list">
-            <li class="goods-item" v-for="(food,index) in good.foods" :key="index" @click.stop="goToFood(food)">
+            <li class="goods-item" v-for="(food,index) in good.foods" :key="index" @click.stop="goToFood(foodWrapper(food,good.name))">
               <img :src="food.icon">
               <div class="content">
                 <h2>{{food.name}}</h2>

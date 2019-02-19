@@ -1,6 +1,6 @@
 <template>
     <div>
-      business
+      商家
     </div>
 </template>
 
