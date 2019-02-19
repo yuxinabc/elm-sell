@@ -224,7 +224,6 @@
           font-size 12px
           color #333
           line-height 16px
-          word-break break-all
     .no-data
       font-size 12px
       color #999

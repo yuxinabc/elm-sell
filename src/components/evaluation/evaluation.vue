@@ -1,5 +1,5 @@
 <template>
-     <cube-scroll class="my-cube-scroll">
+     <cube-scroll class="my-cube-scroll" :options="scrollOptions">
         <split></split>
         <comment :data="comments" :checks="titles"></comment>
       </cube-scroll>
@@ -22,7 +22,11 @@
           { text: '全部', type: 0 },
           { text: '满意', type: 0 },
           { text: '不满意', type: 1 }
-        ]
+        ],
+        scrollOptions: {
+          click: false,
+          directionLockThreshold: 0
+        }
       }
     },
     created() {
