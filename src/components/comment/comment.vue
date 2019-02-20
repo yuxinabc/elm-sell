@@ -213,6 +213,7 @@
             height 12px
       .content-wrapper
         width 100%
+        display flex
         .thumb
           margin-right 3px
           font-size 12px
@@ -221,10 +222,12 @@
           &.icon-thumb_down
             color #999
         .text
+          flex 1
           font-size 12px
           color #333
           line-height 16px
-    .no-data
+          white-space normal
+  .no-data
       font-size 12px
       color #999
       padding 15px

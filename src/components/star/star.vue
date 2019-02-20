@@ -57,6 +57,7 @@
       height 10px
       background-size 10px 10px
       background-repeat no-repeat
+      margin-right: 3px
       &:last-child
         margin-right: 0
       &.on
@@ -72,6 +73,7 @@
         height 15px
         background-size 15px 15px
         background-repeat no-repeat
+        margin-right: 6px
         &:last-child
           margin-right: 0
         &.on
